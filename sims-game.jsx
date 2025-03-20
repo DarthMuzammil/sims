@@ -4,8 +4,11 @@ import { useRef, useState, useEffect } from "react"
 import { Canvas, useFrame } from "@react-three/fiber"
 import { OrbitControls, Text, Box, Plane, useTexture } from "@react-three/drei"
 import { Vector3 } from "three"
+import ChatInterface from "./app/components/ChatInterface"
 
 export default function SimsGame() {
+  const [showChat, setShowChat] = useState(false);
+  
   return (
     (<div className="w-full h-screen">
       <Canvas shadows camera={{ position: [10, 10, 10], fov: 50 }}>
@@ -16,7 +19,7 @@ export default function SimsGame() {
           castShadow
           shadow-mapSize-width={2048}
           shadow-mapSize-height={2048} />
-        <GameWorld />
+        <GameWorld onStartChat={() => setShowChat(true)} />
         <OrbitControls target={[0, 0, 0]} maxPolarAngle={Math.PI / 2} />
       </Canvas>
       <div
@@ -27,11 +30,12 @@ export default function SimsGame() {
         <p>1-3 - Select chat options (when chatting)</p>
         <p>Mouse - Rotate camera</p>
       </div>
+      {showChat && <ChatInterface />}
     </div>)
   );
 }
 
-function GameWorld() {
+function GameWorld({ onStartChat }) {
   const [playerPosition, setPlayerPosition] = useState(new Vector3(0, 0, 5))
   const [chatting, setChatting] = useState(false)
   const [chatOptions, setChatOptions] = useState([])
@@ -42,6 +46,7 @@ function GameWorld() {
     setChatOptions(
       ["How are you today?", "What do you like to do for fun?", "Nice weather we're having!"]
     )
+    onStartChat()
   }
 
   const handleChatOption = (option) => {
@@ -380,43 +385,40 @@ function Character({ position, setPosition }) {
   );
 }
 
-function NPCCharacter({ playerPosition, onInteract, chatting, chatOptions, response }) {
-  const npcRef = useRef()
-  const npcPosition = new Vector3(5, 1, -5)
-  const [canInteract, setCanInteract] = useState(false)
+function NPCCharacter({ playerPosition, onInteract, chatting, chatOptions, response, name = "NPC" }) {
+  const position = new Vector3(0, 0, 0)
+  const ref = useRef()
+  const useChatStore = require('./app/store/chatStore').default
+  const setCurrentCharacter = useChatStore(state => state.setCurrentCharacter)
+  
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === "e") {
+        const distance = position.distanceTo(playerPosition)
+        if (distance < 3) {
+          setCurrentCharacter(name)
+          onInteract()
+        }
+      }
+    }
+    
+    window.addEventListener("keydown", handleKeyDown)
+    return () => window.removeEventListener("keydown", handleKeyDown)
+  }, [playerPosition, onInteract, name, setCurrentCharacter])
 
   useFrame(() => {
-    // Check if player is close enough to interact
-    const distance = playerPosition.distanceTo(npcPosition)
-    const canInteractNow = distance < 3
-
-    if (canInteractNow !== canInteract) {
-      setCanInteract(canInteractNow)
-    }
-
     // Make NPC face the player
-    if (npcRef.current) {
-      const direction = new Vector3().subVectors(playerPosition, npcPosition)
+    if (ref.current) {
+      const direction = new Vector3().subVectors(playerPosition, position)
       if (direction.length() > 0.1) {
         const angle = Math.atan2(direction.x, direction.z)
-        npcRef.current.rotation.y = angle
+        ref.current.rotation.y = angle
       }
     }
   })
 
-  useEffect(() => {
-    const handleKeyDown = (e) => {
-      if (e.key.toLowerCase() === "e" && canInteract && !chatting) {
-        onInteract()
-      }
-    }
-
-    window.addEventListener("keydown", handleKeyDown)
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [canInteract, chatting, onInteract])
-
   return (
-    (<group ref={npcRef} position={[npcPosition.x, 1, npcPosition.z]}>
+    (<group ref={ref} position={[position.x, 1, position.z]}>
       {/* NPC body - different color from player */}
       <Box castShadow args={[0.8, 1.5, 0.5]} position={[0, 0.75, 0]}>
         <meshStandardMaterial color="#d3869b" roughness={0.6} />
@@ -451,7 +453,7 @@ function NPCCharacter({ playerPosition, onInteract, chatting, chatOptions, respo
         <meshBasicMaterial color="black" />
       </Box>
       {/* Interaction indicator */}
-      {canInteract && !chatting && (
+      {position.distanceTo(playerPosition) < 3 && !chatting && (
         <group position={[0, 2.8, 0]}>
           <Text
             position={[0, 0, 0]}
