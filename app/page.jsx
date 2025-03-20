@@ -1,6 +1,5 @@
-import SimsGame from "@/components/SimsGame";
+import GameRoot from "@/components/GameRoot";
+
 export default function Home() {
-  return (
-    <SimsGame />
-  );
+  return <GameRoot />
 }
