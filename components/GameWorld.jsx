@@ -8,42 +8,28 @@ import { Furniture } from "./Furniture"
 import { TableItems } from "./TableItems"
 import { Character } from "./Character"
 import { NPCCharacter } from "./NPCCharacter"
+import { INITIAL_PLAYER_POSITION, CHAT_TIMEOUT, DEFAULT_CHAT_OPTIONS, CHAT_RESPONSES } from "../constants/world"
 
 export function GameWorld() {
-  const [playerPosition, setPlayerPosition] = useState(new Vector3(0, 0, 5))
+  const [playerPosition, setPlayerPosition] = useState(new Vector3(...INITIAL_PLAYER_POSITION))
   const [chatting, setChatting] = useState(false)
   const [chatOptions, setChatOptions] = useState([])
   const [npcResponse, setNpcResponse] = useState("")
 
   const handleStartChat = () => {
     setChatting(true)
-    setChatOptions(
-      ["How are you today?", "What do you like to do for fun?", "Nice weather we're having!"]
-    )
+    setChatOptions(DEFAULT_CHAT_OPTIONS)
   }
 
   const handleChatOption = (option) => {
-    let response = ""
-    switch (option) {
-      case "How are you today?":
-        response = "I'm doing great, thanks for asking!"
-        break
-      case "What do you like to do for fun?":
-        response = "I enjoy reading and gardening!"
-        break
-      case "Nice weather we're having!":
-        response = "Yes, perfect day for a picnic!"
-        break
-      default:
-        response = "That's interesting!"
-    }
+    const response = CHAT_RESPONSES[option] || CHAT_RESPONSES.DEFAULT
     setNpcResponse(response)
 
     // Reset chat after a few seconds
     setTimeout(() => {
       setNpcResponse("")
       setChatting(false)
-    }, 5000)
+    }, CHAT_TIMEOUT)
   }
 
   useEffect(() => {
@@ -60,17 +46,19 @@ export function GameWorld() {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [chatting, chatOptions])
 
-  return (<>
-    <Floor />
-    <Walls />
-    <Furniture />
-    <TableItems />
-    <Character position={playerPosition} setPosition={setPlayerPosition} />
-    <NPCCharacter
-      playerPosition={playerPosition}
-      onInteract={handleStartChat}
-      chatting={chatting}
-      chatOptions={chatOptions}
-      response={npcResponse} />
-  </>);
+  return (
+    <>
+      <Floor />
+      <Walls />
+      <Furniture />
+      <TableItems />
+      <Character position={playerPosition} setPosition={setPlayerPosition} />
+      <NPCCharacter
+        playerPosition={playerPosition}
+        onInteract={handleStartChat}
+        chatting={chatting}
+        chatOptions={chatOptions}
+        response={npcResponse} />
+    </>
+  );
 } 

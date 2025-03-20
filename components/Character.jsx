@@ -4,12 +4,13 @@ import { useRef, useState, useEffect } from "react"
 import { useFrame } from "@react-three/fiber"
 import { Box, Text } from "@react-three/drei"
 import { Vector3 } from "three"
+import { CHARACTER_COLORS, MATERIAL_PROPERTIES } from "../constants/colors"
+import { MOVEMENT, BOUNDS, CHARACTER_DIMENSIONS, STATUS_TEXT } from "../constants/player"
 
 export function Character({ position, setPosition }) {
   const characterRef = useRef()
   const [targetPosition, setTargetPosition] = useState(new Vector3(position.x, position.y, position.z))
   const [isMoving, setIsMoving] = useState(false)
-  const moveSpeed = 0.05
 
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -17,16 +18,16 @@ export function Character({ position, setPosition }) {
 
       switch (e.key.toLowerCase()) {
         case "w":
-          newTarget.z -= 0.5
+          newTarget.z -= MOVEMENT.STEP_SIZE
           break
         case "s":
-          newTarget.z += 0.5
+          newTarget.z += MOVEMENT.STEP_SIZE
           break
         case "a":
-          newTarget.x -= 0.5
+          newTarget.x -= MOVEMENT.STEP_SIZE
           break
         case "d":
-          newTarget.x += 0.5
+          newTarget.x += MOVEMENT.STEP_SIZE
           break
         case "e":
           console.log("Trying to interact with nearby objects")
@@ -36,8 +37,8 @@ export function Character({ position, setPosition }) {
       }
 
       // Limit movement within bounds
-      newTarget.x = Math.max(-9, Math.min(9, newTarget.x))
-      newTarget.z = Math.max(-9, Math.min(9, newTarget.z))
+      newTarget.x = Math.max(BOUNDS.MIN_X, Math.min(BOUNDS.MAX_X, newTarget.x))
+      newTarget.z = Math.max(BOUNDS.MIN_Z, Math.min(BOUNDS.MAX_Z, newTarget.z))
 
       setTargetPosition(newTarget)
       setIsMoving(true)
@@ -48,14 +49,14 @@ export function Character({ position, setPosition }) {
   }, [targetPosition])
 
   useFrame(() => {
-    if (position.distanceTo(targetPosition) > 0.1) {
-      const newPos = position.clone().lerp(targetPosition, moveSpeed)
+    if (position.distanceTo(targetPosition) > MOVEMENT.INTERACTION_DISTANCE) {
+      const newPos = position.clone().lerp(targetPosition, MOVEMENT.MOVE_SPEED)
       setPosition(newPos)
 
       // Update character rotation to face movement direction
       if (characterRef.current) {
         const direction = new Vector3().subVectors(targetPosition, position)
-        if (direction.length() > 0.1) {
+        if (direction.length() > MOVEMENT.INTERACTION_DISTANCE) {
           const angle = Math.atan2(direction.x, direction.z)
           characterRef.current.rotation.y = angle
         }
@@ -66,51 +67,51 @@ export function Character({ position, setPosition }) {
   })
 
   return (
-    (<group ref={characterRef} position={[position.x, 1, position.z]}>
+    <group ref={characterRef} position={[position.x, BOUNDS.CHARACTER_Y, position.z]}>
       {/* Character body */}
-      <Box castShadow args={[0.8, 1.5, 0.5]} position={[0, 0.75, 0]}>
-        <meshStandardMaterial color="#b8bb26" roughness={0.6} />
+      <Box castShadow args={CHARACTER_DIMENSIONS.BODY} position={[0, 0.75, 0]}>
+        <meshStandardMaterial color={CHARACTER_COLORS.BODY} roughness={MATERIAL_PROPERTIES.BODY_ROUGHNESS} />
       </Box>
       {/* Character head */}
-      <Box castShadow args={[0.7, 0.7, 0.7]} position={[0, 1.85, 0]}>
-        <meshStandardMaterial color="#fabd2f" roughness={0.5} />
+      <Box castShadow args={CHARACTER_DIMENSIONS.HEAD} position={[0, 1.85, 0]}>
+        <meshStandardMaterial color={CHARACTER_COLORS.HEAD} roughness={MATERIAL_PROPERTIES.HEAD_ROUGHNESS} />
       </Box>
       {/* Character arms */}
-      <Box castShadow args={[0.25, 1, 0.25]} position={[0.6, 0.75, 0]}>
-        <meshStandardMaterial color="#b8bb26" roughness={0.6} />
+      <Box castShadow args={CHARACTER_DIMENSIONS.ARMS} position={[0.6, 0.75, 0]}>
+        <meshStandardMaterial color={CHARACTER_COLORS.BODY} roughness={MATERIAL_PROPERTIES.BODY_ROUGHNESS} />
       </Box>
-      <Box castShadow args={[0.25, 1, 0.25]} position={[-0.6, 0.75, 0]}>
-        <meshStandardMaterial color="#b8bb26" roughness={0.6} />
+      <Box castShadow args={CHARACTER_DIMENSIONS.ARMS} position={[-0.6, 0.75, 0]}>
+        <meshStandardMaterial color={CHARACTER_COLORS.BODY} roughness={MATERIAL_PROPERTIES.BODY_ROUGHNESS} />
       </Box>
       {/* Character legs */}
-      <Box castShadow args={[0.3, 0.8, 0.3]} position={[0.2, 0, 0]}>
-        <meshStandardMaterial color="#458588" roughness={0.5} />
+      <Box castShadow args={CHARACTER_DIMENSIONS.LEGS} position={[0.2, 0, 0]}>
+        <meshStandardMaterial color={CHARACTER_COLORS.LEGS} roughness={MATERIAL_PROPERTIES.LEGS_ROUGHNESS} />
       </Box>
-      <Box castShadow args={[0.3, 0.8, 0.3]} position={[-0.2, 0, 0]}>
-        <meshStandardMaterial color="#458588" roughness={0.5} />
+      <Box castShadow args={CHARACTER_DIMENSIONS.LEGS} position={[-0.2, 0, 0]}>
+        <meshStandardMaterial color={CHARACTER_COLORS.LEGS} roughness={MATERIAL_PROPERTIES.LEGS_ROUGHNESS} />
       </Box>
       {/* Character eyes */}
-      <Box args={[0.1, 0.1, 0.1]} position={[0.2, 1.9, 0.35]}>
-        <meshBasicMaterial color="black" />
+      <Box args={CHARACTER_DIMENSIONS.FEATURES} position={[0.2, 1.9, 0.35]}>
+        <meshBasicMaterial color={CHARACTER_COLORS.EYES} />
       </Box>
-      <Box args={[0.1, 0.1, 0.1]} position={[-0.2, 1.9, 0.35]}>
-        <meshBasicMaterial color="black" />
+      <Box args={CHARACTER_DIMENSIONS.FEATURES} position={[-0.2, 1.9, 0.35]}>
+        <meshBasicMaterial color={CHARACTER_COLORS.EYES} />
       </Box>
       {/* Character mouth */}
-      <Box args={[0.3, 0.05, 0.1]} position={[0, 1.7, 0.35]}>
-        <meshBasicMaterial color="black" />
+      <Box args={CHARACTER_DIMENSIONS.MOUTH} position={[0, 1.7, 0.35]}>
+        <meshBasicMaterial color={CHARACTER_COLORS.MOUTH} />
       </Box>
       {/* Status indicator */}
       <Text
         position={[0, 2.5, 0]}
-        color="white"
+        color={CHARACTER_COLORS.TEXT}
         fontSize={0.3}
         anchorX="center"
         anchorY="middle"
         outlineWidth={0.05}
-        outlineColor="#000000">
-        {isMoving ? "Walking" : "Idle"}
+        outlineColor={CHARACTER_COLORS.TEXT_OUTLINE}>
+        {isMoving ? STATUS_TEXT.MOVING : STATUS_TEXT.IDLE}
       </Text>
-    </group>)
+    </group>
   );
 } 
