@@ -2,11 +2,11 @@
 
 import { useState, useEffect } from "react"
 import { Text } from "@react-three/drei"
-import { Katana } from "./scene/Katana"
+import { WoodenAxe } from "./scene/WoodenAxe"
 
 export function InteractiveSword({ 
   position = [0, 1.5, 0],
-  name = "Katana",
+  name = "Wooden Axe",
   onPickup
 }) {
   const [isHovered, setIsHovered] = useState(false)
@@ -36,10 +36,10 @@ export function InteractiveSword({
         </Text>
       )}
       
-      <Katana 
+      <WoodenAxe 
         position={[0, 0, 0]}
-        rotation={[0, 0, 0]}
-        scale={1}
+        rotation={[0, Math.PI / 2, 0]}
+        scale={2}
         isHovered={isHovered}
         onClick={handleInteraction}
         onHover={setIsHovered}

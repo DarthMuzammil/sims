@@ -1,8 +1,11 @@
+"use client"
+
 import { useRef, useState, forwardRef, useImperativeHandle, useCallback } from 'react'
 import { useFrame } from '@react-three/fiber'
 import { Sphere } from '@react-three/drei'
 import { Vector3 } from 'three'
-import { BOUNDS } from '../constants/player'
+import { CHARACTER_Y, DEFAULT_BOUNDS, getBounds, clampToBounds } from '../constants/player'
+import { useFloor } from '@/contexts/FloorContext'
 
 const BALL_CONFIG = {
   RADIUS: 0.3,
@@ -22,10 +25,11 @@ export const Ball = forwardRef(({ position: initialPosition }, ref) => {
   const velocityRef = useRef(new Vector3(0, 0, 0))
   const [isHeld, setIsHeld] = useState(false)
   const characterPositionRef = useRef(null)
+  const { floorSections } = useFloor()
 
   const handlePickup = useCallback((characterPosition) => {
     const distance = positionRef.current.distanceTo(
-      new Vector3(characterPosition.x, BOUNDS.CHARACTER_Y, characterPosition.z)
+      new Vector3(characterPosition.x, CHARACTER_Y, characterPosition.z)
     )
     
     if (distance <= BALL_CONFIG.PICKUP_DISTANCE) {
@@ -62,10 +66,12 @@ export const Ball = forwardRef(({ position: initialPosition }, ref) => {
   useFrame((state, delta) => {
     if (!ballRef.current) return
 
+    const bounds = getBounds(floorSections)
+
     if (isHeld && characterPositionRef.current) {
       const targetPosition = new Vector3(
         characterPositionRef.current.x,
-        BOUNDS.CHARACTER_Y + BALL_CONFIG.HOVER_HEIGHT,
+        CHARACTER_Y + BALL_CONFIG.HOVER_HEIGHT,
         characterPositionRef.current.z + 0.5
       )
       positionRef.current.lerp(targetPosition, 0.3)
@@ -95,13 +101,13 @@ export const Ball = forwardRef(({ position: initialPosition }, ref) => {
     }
 
     // World bounds collision
-    if (newPosition.x < BOUNDS.MIN_X || newPosition.x > BOUNDS.MAX_X) {
+    if (newPosition.x < bounds.MIN_X || newPosition.x > bounds.MAX_X) {
       newVelocity.x = -newVelocity.x * BALL_CONFIG.BOUNCE
-      newPosition.x = Math.max(BOUNDS.MIN_X, Math.min(BOUNDS.MAX_X, newPosition.x))
+      newPosition.x = Math.max(bounds.MIN_X, Math.min(bounds.MAX_X, newPosition.x))
     }
-    if (newPosition.z < BOUNDS.MIN_Z || newPosition.z > BOUNDS.MAX_Z) {
+    if (newPosition.z < bounds.MIN_Z || newPosition.z > bounds.MAX_Z) {
       newVelocity.z = -newVelocity.z * BALL_CONFIG.BOUNCE
-      newPosition.z = Math.max(BOUNDS.MIN_Z, Math.min(BOUNDS.MAX_Z, newPosition.z))
+      newPosition.z = Math.max(bounds.MIN_Z, Math.min(bounds.MAX_Z, newPosition.z))
     }
 
     velocityRef.current.copy(newVelocity)

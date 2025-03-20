@@ -10,18 +10,18 @@ export const SCREENS = {
     autoProgress: true,
     autoProgressDelay: 3000,
   },
-  // CHARACTER_CREATION: {
-  //   id: 'CHARACTER_CREATION',
-  //   component: CharacterCreation,
-  //   next: 'TUTORIAL',
-  //   autoProgress: false,
-  // },
-  // TUTORIAL: {
-  //   id: 'TUTORIAL',
-  //   component: Tutorial,
-  //   next: 'GAME',
-  //   autoProgress: false,
-  // },
+  CHARACTER_CREATION: {
+    id: 'CHARACTER_CREATION',
+    component: CharacterCreation,
+    next: 'TUTORIAL',
+    autoProgress: false,
+  },
+  TUTORIAL: {
+    id: 'TUTORIAL',
+    component: Tutorial,
+    next: 'GAME',
+    autoProgress: false,
+  },
   GAME: {
     id: 'GAME',
     next: null,

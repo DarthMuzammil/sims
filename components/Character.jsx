@@ -4,7 +4,7 @@ import { useRef } from "react"
 import { useFrame } from "@react-three/fiber"
 import { Text, Billboard } from "@react-three/drei"
 import { CHARACTER_COLORS } from "../constants/character"
-import { BOUNDS, STATUS_TEXT } from "../constants/player"
+import { STATUS_TEXT, CHARACTER_Y } from "../constants/player"
 import { useCharacterMovement } from "../hooks/useCharacterMovement"
 import { CharacterModel } from "./shared/CharacterModel"
 import { Katana } from "./scene/Katana"
@@ -12,7 +12,7 @@ import { Katana } from "./scene/Katana"
 export function Character({ position, setPosition, name, hasSword, onRotationChange }) {
   const characterRef = useRef()
   const swordRef = useRef()
-  const { isMoving, updateMovement, currentRotation } = useCharacterMovement({
+  const { isMoving, updateMovement } = useCharacterMovement({
     initialPosition: position,
     onPositionChange: setPosition
   })
@@ -48,7 +48,7 @@ export function Character({ position, setPosition, name, hasSword, onRotationCha
       // Rotate sword based on character movement with smoother transitions
       const baseRotation = [
         Math.PI * 0.1,  // Slight upward tilt
-        currentRotation,  // Follow character rotation
+        rotation,  // Follow character rotation
         Math.PI * 0.25   // Angled stance
       ]
 
@@ -61,7 +61,7 @@ export function Character({ position, setPosition, name, hasSword, onRotationCha
   })
 
   return (
-    <group ref={characterRef} position={[position.x, BOUNDS.CHARACTER_Y, position.z]}>
+    <group ref={characterRef} position={[position.x, CHARACTER_Y, position.z]}>
       <CharacterModel colors={CHARACTER_COLORS.PLAYER} isMoving={isMoving} />
       
       {/* Enhanced sword display when equipped */}

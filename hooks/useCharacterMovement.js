@@ -1,6 +1,9 @@
+"use client"
+
 import { useState, useEffect } from "react"
 import { Vector3 } from "three"
-import { MOVEMENT, BOUNDS } from "../constants/player"
+import { MOVEMENT, getBounds, clampToBounds } from "../constants/player"
+import { useFloor } from "@/contexts/FloorContext"
 
 export function useCharacterMovement({ 
   initialPosition = new Vector3(0, 0, 0),
@@ -11,6 +14,7 @@ export function useCharacterMovement({
   const [velocity, setVelocity] = useState(new Vector3(0, 0, 0))
   const [input, setInput] = useState({ x: 0, z: 0 })
   const [isMoving, setIsMoving] = useState(false)
+  const { floorSections } = useFloor()
 
   useEffect(() => {
     if (!movementEnabled || typeof window === 'undefined') return;
@@ -88,20 +92,22 @@ export function useCharacterMovement({
     // Update position
     const newPosition = position.clone().add(newVelocity)
 
+    // Get dynamic bounds based on current floor sections
+    const bounds = getBounds(floorSections)
+
     // Clamp position to bounds
-    newPosition.x = Math.max(BOUNDS.MIN_X, Math.min(BOUNDS.MAX_X, newPosition.x))
-    newPosition.z = Math.max(BOUNDS.MIN_Z, Math.min(BOUNDS.MAX_Z, newPosition.z))
+    const clampedPosition = clampToBounds(newPosition, bounds)
 
     setVelocity(newVelocity)
-    setPosition(newPosition)
-    onPositionChange(newPosition)
+    setPosition(clampedPosition)
+    onPositionChange(clampedPosition)
 
     // Calculate rotation
     const rotation = (newVelocity.x !== 0 || newVelocity.z !== 0) 
       ? Math.atan2(newVelocity.x, newVelocity.z)
       : null
 
-    return { position: newPosition, rotation }
+    return { position: clampedPosition, rotation }
   }
 
   return {

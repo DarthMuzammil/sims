@@ -10,6 +10,7 @@ import { Character } from "./Character";
 import { NPCCharacter } from "./NPCCharacter";
 import { InteractiveSword } from "./InteractiveSword";
 import { Ball } from "./Ball";
+import { Sky } from "./Sky";
 import { useBallInteraction } from "../hooks/useBallInteraction";
 import { Environment, SpotLight, DirectionalLight, AmbientLight } from "@react-three/drei";
 import {
@@ -19,16 +20,10 @@ import {
   CHAT_RESPONSES,
 } from "../constants/world";
 
-export function GameWorld({ onWorldReady, playerData }) {
-  const [playerPosition, setPlayerPosition] = useState(
-    new Vector3(...INITIAL_PLAYER_POSITION)
-  );
-  const [playerRotation, setPlayerRotation] = useState(0);
-  const [chatting, setChatting] = useState(false);
-  const [chatOptions, setChatOptions] = useState([]);
-  const [npcResponse, setNpcResponse] = useState("");
-  const [hasSword, setHasSword] = useState(false);
+// Separate component for 3D content
+function GameScene({ playerPosition, setPlayerPosition, playerData, hasSword, setHasSword, chatting, chatOptions, npcResponse, handleStartChat, handleChatOption }) {
   const ballRef = useRef(null);
+  const [playerRotation, setPlayerRotation] = useState(0);
 
   // Ball interaction state
   const { isInteracting, interactionType } = useBallInteraction({
@@ -43,46 +38,6 @@ export function GameWorld({ onWorldReady, playerData }) {
       }
     }
   });
-
-  useEffect(() => {
-    // Notify parent that GameWorld is mounted and ready
-    onWorldReady?.();
-  }, [onWorldReady]);
-
-  const handleStartChat = () => {
-    setChatting(true);
-    setChatOptions(DEFAULT_CHAT_OPTIONS);
-  };
-
-  const handleChatOption = (option) => {
-    const response = CHAT_RESPONSES[option] || CHAT_RESPONSES.DEFAULT;
-    setNpcResponse(response);
-
-    // Reset chat after a few seconds
-    setTimeout(() => {
-      setNpcResponse("");
-      setChatting(false);
-    }, CHAT_TIMEOUT);
-  };
-
-  const handleSwordPickup = () => {
-    setHasSword(true);
-    console.log("Sword picked up!");
-  };
-
-  useEffect(() => {
-    const handleKeyDown = (e) => {
-      if (chatting && e.key >= "1" && e.key <= "3") {
-        const optionIndex = Number.parseInt(e.key) - 1;
-        if (optionIndex >= 0 && optionIndex < chatOptions.length) {
-          handleChatOption(chatOptions[optionIndex]);
-        }
-      }
-    };
-
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [chatting, chatOptions]);
 
   // Update ball position when character moves
   useEffect(() => {
@@ -118,6 +73,7 @@ export function GameWorld({ onWorldReady, playerData }) {
       {/* Environment adds ambient lighting and reflections */}
       <Environment preset="warehouse" />
 
+      <Sky />
       <Floor />
 
       {!hasSword && (
@@ -125,7 +81,7 @@ export function GameWorld({ onWorldReady, playerData }) {
           position={[5, 0, 5]}
           name="Katana"
           texturePath="/swords/katana.png"
-          onPickup={handleSwordPickup}
+          onPickup={() => setHasSword(true)}
         />
       )}
 
@@ -149,5 +105,51 @@ export function GameWorld({ onWorldReady, playerData }) {
         response={npcResponse}
       />
     </>
+  );
+}
+
+export function GameWorld({ onWorldReady, playerData }) {
+  const [playerPosition, setPlayerPosition] = useState(
+    new Vector3(...INITIAL_PLAYER_POSITION)
+  );
+  const [chatting, setChatting] = useState(false);
+  const [chatOptions, setChatOptions] = useState([]);
+  const [npcResponse, setNpcResponse] = useState("");
+  const [hasSword, setHasSword] = useState(false);
+
+  useEffect(() => {
+    // Notify parent that GameWorld is mounted and ready
+    onWorldReady?.();
+  }, [onWorldReady]);
+
+  const handleStartChat = () => {
+    setChatting(true);
+    setChatOptions(DEFAULT_CHAT_OPTIONS);
+  };
+
+  const handleChatOption = (option) => {
+    const response = CHAT_RESPONSES[option] || CHAT_RESPONSES.DEFAULT;
+    setNpcResponse(response);
+
+    // Reset chat after a few seconds
+    setTimeout(() => {
+      setNpcResponse("");
+      setChatting(false);
+    }, CHAT_TIMEOUT);
+  };
+
+  return (
+    <GameScene 
+      playerPosition={playerPosition}
+      setPlayerPosition={setPlayerPosition}
+      playerData={playerData}
+      hasSword={hasSword}
+      setHasSword={setHasSword}
+      chatting={chatting}
+      chatOptions={chatOptions}
+      npcResponse={npcResponse}
+      handleStartChat={handleStartChat}
+      handleChatOption={handleChatOption}
+    />
   );
 }
