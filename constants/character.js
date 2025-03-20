@@ -10,16 +10,25 @@ export const CHARACTER_DIMENSIONS = {
 
 // Character colors
 export const CHARACTER_COLORS = {
-  PLAYER: {
-    BODY: "#458588",
-    HEAD: "#b16286",
-    LEGS: "#98971a",
-    EYES: "black",
-    MOUTH: "black",
-    TEXT: "white",
-    TEXT_OUTLINE: "#000000"
+    PLAYER: {
+      BODY: "#4C9F70",         // Fresh green-teal tone → friendly & balanced
+      HEAD: "#D3687C",         // Muted rose → skin/head contrast and warmth
+      LEGS: "#556B2F",         // Earthy olive → grounded, sturdy
+      EYES: "#2D2D2D",         // Deep neutral gray → softer than black, less harsh
+      MOUTH: "#3C3C3C",        // Muted dark gray → low attention feature
+      TEXT: "#F9F9F9",         // Near-white for better contrast
+      TEXT_OUTLINE: "#1A1A1A"  // Softer black for readability
+    },
+    NPC: {
+      BODY: "#6A5ACD",         // Muted indigo → separates NPCs visually, a calm tone
+      HEAD: "#B98B82",         // Muted warm beige → neutral skin tone
+      LEGS: "#4B5320",         // Dark moss green → solid, grounded
+      EYES: "#2C2C2C",
+      MOUTH: "#3A3A3A",
+      TEXT: "#FFFFFF",
+      TEXT_OUTLINE: "#000000"
+    }
   }
-}
 
 // Material properties
 export const MATERIAL_PROPERTIES = {

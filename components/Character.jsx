@@ -28,7 +28,7 @@ export function Character({ position, setPosition }) {
     <group ref={characterRef} position={[position.x, BOUNDS.CHARACTER_Y, position.z]}>
       <CharacterModel colors={CHARACTER_COLORS.PLAYER} />
       {/* Status indicator */}
-      <Text
+      {/* <Text
         position={[0, 2.5, 0]}
         color={CHARACTER_COLORS.PLAYER.TEXT}
         fontSize={0.3}
@@ -37,7 +37,7 @@ export function Character({ position, setPosition }) {
         outlineWidth={0.05}
         outlineColor={CHARACTER_COLORS.PLAYER.TEXT_OUTLINE}>
         {isMoving ? STATUS_TEXT.MOVING : STATUS_TEXT.IDLE}
-      </Text>
+      </Text> */}
     </group>
   )
 } 
