@@ -4,17 +4,21 @@ import { useEffect, useState } from 'react'
 import Image from 'next/image'
 import { motion, AnimatePresence } from 'framer-motion'
 
-export default function SplashScreen() {
+export default function SplashScreen({ onComplete }) {
   const [isVisible, setIsVisible] = useState(true)
 
   useEffect(() => {
     // Automatically hide splash screen after 3 seconds
     const timer = setTimeout(() => {
       setIsVisible(false)
+      // Call onComplete after animation finishes
+      setTimeout(() => {
+        onComplete?.();
+      }, 500); // Match the exit animation duration
     }, 3000)
 
     return () => clearTimeout(timer)
-  }, [])
+  }, [onComplete])
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -85,15 +89,15 @@ export default function SplashScreen() {
           <div className="flex flex-col items-center gap-8">
             <motion.div
               variants={logoVariants}
-              className="relative w-24 h-24"
+              className="relative w-48 h-48 flex items-center justify-center"
             >
-              <div className="absolute inset-0 rounded-full bg-blue-500/20 blur-xl animate-pulse" />
+              <div className="absolute inset-0 rounded-full bg-green-500/20 blur-xl animate-pulse" />
               <Image
-                src="/loading-spinner.svg"
-                alt="SentientSim Logo"
-                width={96}
-                height={96}
-                className="relative z-10 animate-spin"
+                src="/simslogo.svg"
+                alt="The Sims Logo"
+                width={160}
+                height={160}
+                className="relative z-10 animate-spin-slow"
                 priority
               />
             </motion.div>

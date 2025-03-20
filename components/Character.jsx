@@ -8,7 +8,7 @@ import { BOUNDS, STATUS_TEXT } from "../constants/player"
 import { useCharacterMovement } from "../hooks/useCharacterMovement"
 import { CharacterModel } from "./shared/CharacterModel"
 
-export function Character({ position, setPosition }) {
+export function Character({ position, setPosition, name }) {
   const characterRef = useRef()
   const { isMoving, updateMovement } = useCharacterMovement({
     initialPosition: position,
@@ -27,6 +27,18 @@ export function Character({ position, setPosition }) {
   return (
     <group ref={characterRef} position={[position.x, BOUNDS.CHARACTER_Y, position.z]}>
       <CharacterModel colors={CHARACTER_COLORS.PLAYER} />
+      {/* Character name */}
+      <Text
+        position={[0, 2.5, 0]}
+        color={CHARACTER_COLORS.PLAYER.TEXT}
+        fontSize={0.3}
+        anchorX="center"
+        anchorY="middle"
+        outlineWidth={0.05}
+        outlineColor={CHARACTER_COLORS.PLAYER.TEXT_OUTLINE}
+        >
+        {name || "Player"}
+      </Text>
       {/* Status indicator */}
       {/* <Text
         position={[0, 2.5, 0]}

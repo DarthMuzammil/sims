@@ -10,7 +10,7 @@ import { Character } from "./Character"
 import { NPCCharacter } from "./NPCCharacter"
 import { INITIAL_PLAYER_POSITION, CHAT_TIMEOUT, DEFAULT_CHAT_OPTIONS, CHAT_RESPONSES } from "../constants/world"
 
-export function GameWorld({ onWorldReady }) {
+export function GameWorld({ onWorldReady, playerData }) {
   const [playerPosition, setPlayerPosition] = useState(new Vector3(...INITIAL_PLAYER_POSITION))
   const [chatting, setChatting] = useState(false)
   const [chatOptions, setChatOptions] = useState([])
@@ -57,7 +57,11 @@ export function GameWorld({ onWorldReady }) {
       <Walls />
       <Furniture />
       <TableItems />
-      <Character position={playerPosition} setPosition={setPlayerPosition} />
+      <Character 
+        position={playerPosition} 
+        setPosition={setPlayerPosition} 
+        name={playerData?.name} 
+      />
       <NPCCharacter
         playerPosition={playerPosition}
         onInteract={handleStartChat}
