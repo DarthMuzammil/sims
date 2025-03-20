@@ -10,11 +10,16 @@ import { Character } from "./Character"
 import { NPCCharacter } from "./NPCCharacter"
 import { INITIAL_PLAYER_POSITION, CHAT_TIMEOUT, DEFAULT_CHAT_OPTIONS, CHAT_RESPONSES } from "../constants/world"
 
-export function GameWorld() {
+export function GameWorld({ onWorldReady }) {
   const [playerPosition, setPlayerPosition] = useState(new Vector3(...INITIAL_PLAYER_POSITION))
   const [chatting, setChatting] = useState(false)
   const [chatOptions, setChatOptions] = useState([])
   const [npcResponse, setNpcResponse] = useState("")
+
+  useEffect(() => {
+    // Notify parent that GameWorld is mounted and ready
+    onWorldReady?.()
+  }, [onWorldReady])
 
   const handleStartChat = () => {
     setChatting(true)

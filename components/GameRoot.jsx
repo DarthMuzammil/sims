@@ -4,12 +4,11 @@ import { GameCanvas } from "./canvas/GameCanvas"
 import { GameContainer } from "./layout/GameContainer"
 import { ControlsOverlay } from "./ui/ControlsOverlay"
 
-export default function SimsGame() {
+export default function GameRoot() {
   return (
     <GameContainer>
       <GameCanvas />
-      <ControlsOverlay />
+      {/* <ControlsOverlay /> */}
     </GameContainer>
   );
-}
-
+} 
