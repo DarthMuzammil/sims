@@ -1,36 +1,64 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# VIRTUAL WORLD
+### An Experimental 3D Web Experience
 
-## Getting Started
+![Game Preview](public/preview.gif)
 
-First, run the development server:
+## Vision
 
+VIRTUAL WORLD is an ambitious experiment in browser-based 3D interaction. Built with modern web technologies, it explores the possibilities of creating immersive experiences directly in your browser.
+
+### The Concept
+
+Step into a handcrafted 3D environment where you can freely explore and interact with NPCs. Through a combination of Three.js rendering and React-powered interactions, we're pushing the boundaries of what web browsers can deliver.
+
+### Core Experience
+
+- Walk through a detailed 3D environment
+- Engage in branching dialogues with NPCs
+- Experience dynamic lighting and shadows
+- Enjoy smooth, responsive controls
+
+## Technical Foundation
+
+Built with passion using:
+- Next.js
+- Three.js & React Three Fiber
+- Framer Motion
+- Modern WebGL
+
+## Try It Out
+
+### Quick Start
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Controls
+- WASD - Movement
+- Mouse - Camera control
+- E - Interact
+- 1-3 - Dialogue choices
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+## Development Status
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+This is an early experimental build. Features and mechanics are actively being developed and refined. Feedback and suggestions are always welcome!
 
-## Learn More
+## Roadmap
 
-To learn more about Next.js, take a look at the following resources:
+- [ ] Enhanced NPC interactions
+- [ ] Expanded environment
+- [ ] Additional dialogue systems
+- [ ] Performance optimizations
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Join The Journey
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- 🐛 Found a bug? Open an issue
+- 💡 Have ideas? Start a discussion
+- 🤝 Want to contribute? PRs welcome
 
-## Deploy on Vercel
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+A solo project exploring the future of web-based 3D experiences.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+[GitHub](your-repo-link) | [Development Blog](your-blog-link)
