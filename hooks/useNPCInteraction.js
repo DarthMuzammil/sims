@@ -22,6 +22,8 @@ export function useNPCInteraction({
   }, [playerPosition, npcPosition, interactionDistance, canInteract])
 
   useEffect(() => {
+    if (typeof window === 'undefined') return;
+    
     const handleKeyDown = (e) => {
       if (e.key.toLowerCase() === "e" && canInteract && !chatting) {
         onInteract()

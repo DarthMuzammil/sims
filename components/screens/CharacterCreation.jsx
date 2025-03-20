@@ -21,6 +21,8 @@ export default function CharacterCreation({ onComplete }) {
 
   // Effect to handle initial audio play and user interaction
   useEffect(() => {
+    if (typeof window === 'undefined') return;
+    
     const handleFirstInteraction = async () => {
       if (!audioReady) {
         console.log('Attempting to play audio after user interaction...');

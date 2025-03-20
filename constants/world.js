@@ -5,10 +5,10 @@ export const CAMERA = {
 }
 
 export const LIGHTING = {
-  AMBIENT_INTENSITY: 0.5,
+  AMBIENT_INTENSITY: 0.2,
   DIRECTIONAL_LIGHT: {
-    POSITION: [10, 10, 5],
-    INTENSITY: 1,
+    POSITION: [4, 8, 4],
+    INTENSITY: 1.2,
     SHADOW_MAP_SIZE: 2048
   }
 }

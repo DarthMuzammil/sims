@@ -8,7 +8,7 @@ export default function GameRoot() {
   return (
     <GameContainer>
       <GameCanvas />
-      <ControlsOverlay />
+      {/* <ControlsOverlay /> */}
     </GameContainer>
   );
 } 

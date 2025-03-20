@@ -11,9 +11,9 @@ export const CHARACTER_DIMENSIONS = {
 // Character colors
 export const CHARACTER_COLORS = {
     PLAYER: {
-      BODY: "#4C9F70",         // Fresh green-teal tone → friendly & balanced
+      BODY: "#FFD700",         // Bright yellow for the main body
       HEAD: "#D3687C",         // Muted rose → skin/head contrast and warmth
-      LEGS: "#556B2F",         // Earthy olive → grounded, sturdy
+      LEGS: "#DAA520",         // Golden rod - complementing the yellow body
       EYES: "#2D2D2D",         // Deep neutral gray → softer than black, less harsh
       MOUTH: "#3C3C3C",        // Muted dark gray → low attention feature
       TEXT: "#F9F9F9",         // Near-white for better contrast

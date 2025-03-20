@@ -9,6 +9,8 @@ export function useAudio(audioSrc, options = {}) {
   } = options;
 
   useEffect(() => {
+    if (typeof window === 'undefined') return;
+    
     // Create audio element
     audioRef.current = new Audio(audioSrc);
     audioRef.current.loop = loop;
@@ -19,7 +21,7 @@ export function useAudio(audioSrc, options = {}) {
       const playAudio = async () => {
         try {
           // Check if audio context is suspended and resume it
-          if (window.AudioContext || window.webkitAudioContext) {
+          if (typeof window !== 'undefined' && (window.AudioContext || window.webkitAudioContext)) {
             const AudioContext = window.AudioContext || window.webkitAudioContext;
             const audioContext = new AudioContext();
             if (audioContext.state === 'suspended') {

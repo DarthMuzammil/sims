@@ -13,7 +13,7 @@ export function useCharacterMovement({
   const [isMoving, setIsMoving] = useState(false)
 
   useEffect(() => {
-    if (!movementEnabled) return
+    if (!movementEnabled || typeof window === 'undefined') return;
 
     const handleKeyDown = (e) => {
       const newInput = { ...input }
